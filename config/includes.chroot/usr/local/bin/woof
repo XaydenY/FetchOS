@@ -5,24 +5,65 @@
 
 case "$1" in
     install)
+        if [ -z "$2" ]; then
+            echo "🐕 Woof! You forgot to tell me what to fetch!"
+            echo "Example: woof install firefox"
+            exit 1
+        fi
         echo "🐕 Fetching $2... good boy!"
         sudo apt install "${@:2}"
+        if [ $? -ne 0 ]; then
+            echo "😢 such error... very broken... could not fetch $2"
+            echo "💡 Try running: woof update"
+            exit 1
+        fi
+        echo "✅ much success! $2 has been fetched!"
         ;;
     remove)
+        if [ -z "$2" ]; then
+            echo "🦴 Woof! What should I bury?"
+            echo "Example: woof remove firefox"
+            exit 1
+        fi
         echo "🦴 Burying $2... bye bye!"
         sudo apt remove "${@:2}"
+        if [ $? -ne 0 ]; then
+            echo "😢 such error... could not bury $2... very confusing"
+            exit 1
+        fi
+        echo "✅ $2 has been buried! many space freed!"
         ;;
     update)
         echo "🐾 Sniffing for updates..."
         sudo apt update
+        if [ $? -ne 0 ]; then
+            echo "😢 such error... very no internet... could not sniff updates"
+            echo "💡 Check your internet connection and try again"
+            exit 1
+        fi
+        echo "✅ much fresh! repos are updated!"
         ;;
     upgrade)
         echo "🐕 Growing bigger and stronger!"
         sudo apt upgrade "${@:2}"
+        if [ $? -ne 0 ]; then
+            echo "😢 such error... could not grow stronger... very sad"
+            exit 1
+        fi
+        echo "✅ wow so strong! many upgrades!"
         ;;
     search)
+        if [ -z "$2" ]; then
+            echo "🔍 Woof! What should I sniff for?"
+            echo "Example: woof search firefox"
+            exit 1
+        fi
         echo "🔍 Sniffing around for $2..."
         apt search "${@:2}"
+        if [ $? -ne 0 ]; then
+            echo "😢 such empty... very not found... no $2 anywhere"
+            exit 1
+        fi
         ;;
     *)
         echo "🐶 Woof! FetchOS Package Manager"

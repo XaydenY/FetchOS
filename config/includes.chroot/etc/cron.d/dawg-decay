@@ -1,0 +1,2 @@
+# Decay dawg stats every 2 hours
+0 */2 * * * $USER /usr/local/bin/dawg-decay

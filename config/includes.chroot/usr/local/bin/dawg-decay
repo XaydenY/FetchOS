@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Runs periodically to decay dawg stats
+
+PET_FILE="$HOME/.fetchos/dawg.json"
+
+# Don't run if no pet exists
+if [ ! -f "$PET_FILE" ]; then
+    exit 0
+fi
+
+# Read stats
+HEALTH=$(cat $PET_FILE | grep -o '"health":[0-9]*' | grep -o '[0-9]*')
+HAPPINESS=$(cat $PET_FILE | grep -o '"happiness":[0-9]*' | grep -o '[0-9]*')
+HUNGER=$(cat $PET_FILE | grep -o '"hunger":[0-9]*' | grep -o '[0-9]*')
+NAME=$(cat $PET_FILE | grep -o '"name":"[^"]*"' | grep -o ':[^}]*' | tr -d ':"')
+AGE=$(cat $PET_FILE | grep -o '"age":[0-9]*' | grep -o '[0-9]*')
+
+# Decay stats
+HUNGER=$((HUNGER-10))
+HAPPINESS=$((HAPPINESS-5))
+AGE=$((AGE+1))
+
+# If hungry, health starts dropping
+if [ $HUNGER -lt 20 ]; then
+    HEALTH=$((HEALTH-10))
+fi
+
+# If unhappy, health drops slower
+if [ $HAPPINESS -lt 20 ]; then
+    HEALTH=$((HEALTH-5))
+fi
+
+# Floor at 0
+[ $HUNGER -lt 0 ] && HUNGER=0
+[ $HAPPINESS -lt 0 ] && HAPPINESS=0
+[ $HEALTH -lt 0 ] && HEALTH=0
+
+# Save
+echo "{\"health\":$HEALTH,\"happiness\":$HAPPINESS,\"hunger\":$HUNGER,\"name\":\"$NAME\",\"age\":$AGE}" > $PET_FILE
+
+# Warn user if stats are critical
+if [ $HEALTH -eq 0 ]; then
+    echo "💀 Oh no! $NAME has passed away... run 'dawg vet' to revive!"
+elif [ $HUNGER -lt 20 ]; then
+    echo "⚠️  $NAME is very hungry! Run: dawg feed"
+elif [ $HAPPINESS -lt 20 ]; then
+    echo "⚠️  $NAME is very sad! Run: dawg play"
+fi

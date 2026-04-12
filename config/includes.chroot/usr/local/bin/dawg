@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# FetchOS Virtual Pet
+# Your very own dawg 🐕
+
+PET_FILE="$HOME/.fetchos/dawg.json"
+mkdir -p "$HOME/.fetchos"
+
+# Initialize pet if first run
+if [ ! -f "$PET_FILE" ]; then
+    echo '{"health":100,"happiness":100,"hunger":100,"name":"Buddy","age":0}' > "$PET_FILE"
+    echo "🐕 A wild dawg appeared! Your dawg has been named Buddy!"
+    echo "💡 Tip: Run dawg to check on him anytime"
+fi
+
+# Read stats
+HEALTH=$(cat $PET_FILE | grep -o '"health":[0-9]*' | grep -o '[0-9]*')
+HAPPINESS=$(cat $PET_FILE | grep -o '"happiness":[0-9]*' | grep -o '[0-9]*')
+HUNGER=$(cat $PET_FILE | grep -o '"hunger":[0-9]*' | grep -o '[0-9]*')
+NAME=$(cat $PET_FILE | grep -o '"name":"[^"]*"' | grep -o ':[^}]*' | tr -d ':"')
+
+# Progress bar function
+bar() {
+    local val=$1
+    local filled=$((val/10))
+    local empty=$((10-filled))
+    printf '█%.0s' $(seq 1 $filled)
+    printf '░%.0s' $(seq 1 $empty)
+}
+
+show_stats() {
+    echo ""
+    echo "  🐕 $NAME the FetchOS Dawg"
+    echo "  ─────────────────────────"
+    echo "  ❤️  Health:    $(bar $HEALTH) $HEALTH%"
+    echo "  😊 Happiness: $(bar $HAPPINESS) $HAPPINESS%"
+    echo "  🍖 Hunger:    $(bar $HUNGER) $HUNGER%"
+    echo ""
+}
+
+case "$1" in
+    feed)
+        echo "🦴 Feeding $NAME... good boy!"
+        # Increase hunger stat
+        HUNGER=$((HUNGER+20))
+        [ $HUNGER -gt 100 ] && HUNGER=100
+        echo "{\"health\":$HEALTH,\"happiness\":$HAPPINESS,\"hunger\":$HUNGER,\"name\":\"$NAME\",\"age\":0}" > $PET_FILE
+        echo "🐕 $NAME says: much food! very full! wow!"
+        show_stats
+        ;;
+    play)
+        echo "🎾 Playing with $NAME!"
+        HAPPINESS=$((HAPPINESS+20))
+        HUNGER=$((HUNGER-10))
+        [ $HAPPINESS -gt 100 ] && HAPPINESS=100
+        [ $HUNGER -lt 0 ] && HUNGER=0
+        echo "{\"health\":$HEALTH,\"happiness\":$HAPPINESS,\"hunger\":$HUNGER,\"name\":\"$NAME\",\"age\":0}" > $PET_FILE
+        echo "🐕 $NAME says: such fun! very play! many happy!"
+        show_stats
+        ;;
+    pet)
+        echo "🐾 Petting $NAME..."
+        HAPPINESS=$((HAPPINESS+10))
+        [ $HAPPINESS -gt 100 ] && HAPPINESS=100
+        echo "{\"health\":$HEALTH,\"happiness\":$HAPPINESS,\"hunger\":$HUNGER,\"name\":\"$NAME\",\"age\":0}" > $PET_FILE
+        echo "🐕 $NAME says: wow such pet! very nice!"
+        show_stats
+        ;;
+    rename)
+        if [ -z "$2" ]; then
+            echo "🐕 What should I rename your dawg to?"
+            echo "Example: dawg rename Rex"
+            exit 1
+        fi
+        echo "{\"health\":$HEALTH,\"happiness\":$HAPPINESS,\"hunger\":$HUNGER,\"name\":\"$2\",\"age\":0}" > $PET_FILE
+        echo "🐕 Your dawg has been renamed to $2! much name! very new!"
+        ;;
+    status)
+        show_stats
+        if [ $HUNGER -lt 30 ]; then
+            echo "  ⚠️  $NAME is hungry! Run: dawg feed"
+        fi
+        if [ $HAPPINESS -lt 30 ]; then
+            echo "  ⚠️  $NAME is sad! Run: dawg play"
+        fi
+        if [ $HEALTH -lt 30 ]; then
+            echo "  🚨 $NAME is unwell! Run: dawg feed and dawg play"
+        fi
+        echo ""
+        ;;
+    vet)
+        echo "🏥 Taking $NAME to the vet..."
+        HEALTH=100
+        echo "{\"health\":$HEALTH,\"happiness\":$HAPPINESS,\"hunger\":$HUNGER,\"name\":\"$NAME\",\"age\":$AGE}" > $PET_FILE
+        echo "🐕 $NAME is all better! much health! very recover!"
+        show_stats
+        ;;
+    *)
+        show_stats
+        echo "  Commands:"
+        echo "  dawg feed    → feed your dawg 🦴"
+        echo "  dawg play    → play with your dawg 🎾"
+        echo "  dawg pet     → pet your dawg 🐾"
+        echo "  dawg rename  → rename your dawg"
+        echo "  dawg status  → check on your dawg"
+        echo ""
+        ;;
+esac

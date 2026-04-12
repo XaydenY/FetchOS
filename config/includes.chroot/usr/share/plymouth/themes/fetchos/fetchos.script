@@ -1,0 +1,33 @@
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
+
+// Background
+bg = Image("background.png");
+bg_sprite = Sprite(bg);
+bg_sprite.SetX(0);
+bg_sprite.SetY(0);
+bg_sprite.SetZ(-100);
+
+// Scale background to fit screen
+x_scale = screen_width / bg.GetWidth();
+y_scale = screen_height / bg.GetHeight();
+bg_sprite.SetScale(x_scale, y_scale);
+
+// Progress bar at bottom
+progress_box = Rectangle();
+progress_box.SetColor(1, 1, 1, 0.3);
+progress_box.SetX(screen_width / 2 - 200);
+progress_box.SetY(screen_height - 60);
+progress_box.SetWidth(400);
+progress_box.SetHeight(10);
+
+fun progress_callback(duration, progress) {
+    progress_sprite = Rectangle();
+    progress_sprite.SetColor(0.4, 1, 0.4, 1);
+    progress_sprite.SetX(screen_width / 2 - 200);
+    progress_sprite.SetY(screen_height - 60);
+    progress_sprite.SetWidth(400 * progress);
+    progress_sprite.SetHeight(10);
+}
+
+Plymouth.SetBootProgressFunction(progress_callback);

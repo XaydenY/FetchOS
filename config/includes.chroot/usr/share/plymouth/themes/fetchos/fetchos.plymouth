@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=FetchOS
+Description=FetchOS Boot Theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/fetchos
+ScriptFile=/usr/share/plymouth/themes/fetchos/fetchos.script
