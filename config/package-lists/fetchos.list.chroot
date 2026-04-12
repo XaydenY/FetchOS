@@ -1,8 +1,4 @@
-openbox
-xorg
-lightdm
 python3
-neofetch
 nano
 curl
 git

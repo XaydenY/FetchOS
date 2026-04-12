@@ -1,0 +1,10 @@
+#!/bin/bash
+apt-get purge -y \
+  openbox \
+  xorg \
+  xserver-xorg \
+  lightdm \
+  neofetch \
+  --autoremove
+
+systemctl set-default multi-user.target
