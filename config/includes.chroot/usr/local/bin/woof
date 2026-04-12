@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# FetchOS package manager wrapper
+# Makes apt more doggy 🐕
+
+case "$1" in
+    install)
+        echo "🐕 Fetching $2... good boy!"
+        sudo apt install "${@:2}"
+        ;;
+    remove)
+        echo "🦴 Burying $2... bye bye!"
+        sudo apt remove "${@:2}"
+        ;;
+    update)
+        echo "🐾 Sniffing for updates..."
+        sudo apt update
+        ;;
+    upgrade)
+        echo "🐕 Growing bigger and stronger!"
+        sudo apt upgrade "${@:2}"
+        ;;
+    search)
+        echo "🔍 Sniffing around for $2..."
+        apt search "${@:2}"
+        ;;
+    *)
+        echo "🐶 Woof! FetchOS Package Manager"
+        echo ""
+        echo "Usage: woof [command]"
+        echo ""
+        echo "Commands:"
+        echo "  install  → fetch a new package"
+        echo "  remove   → bury a package"
+        echo "  update   → sniff for updates"
+        echo "  upgrade  → grow stronger"
+        echo "  search   → sniff around"
+        echo ""
+        echo "Example: woof install firefox"
+        ;;
+esac

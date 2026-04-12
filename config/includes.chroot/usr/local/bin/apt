@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$PWD" = "/root" ] || [ -f "/live-build-in-progress" ]; then
+    /usr/bin/apt "$@"
+    exit $?
+fi
+
+echo "🐶 Woof! This is FetchOS — we don't use 'apt' here!"
+echo ""
+echo "   Did you mean: woof $@"
+echo ""
+echo "   Run 'woof' to get started!"
+exit 1

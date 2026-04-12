@@ -1,0 +1,10 @@
+# live-build output
+binary/
+chroot/
+*.iso
+*.img
+.build/
+cache/
+
+# Logs
+*.log

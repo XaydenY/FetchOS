@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# During live-build, scripts run as root in /root/
+# We only block apt-get for regular users
+if [ "$PWD" = "/root" ] || [ -f "/live-build-in-progress" ]; then
+    /usr/bin/apt-get "$@"
+    exit $?
+fi
+
+echo "🐶 Woof! This is FetchOS — we don't use 'apt-get' here!"
+echo ""
+echo "   Did you mean: woof $@"
+echo ""
+echo "   Run 'woof' to get started!"
+exit 1
