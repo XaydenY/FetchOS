@@ -8,3 +8,5 @@ cache/
 
 # Logs
 *.log
+chroot.packages.install
+chroot.packages.install
