@@ -1,5 +1,5 @@
 #!/bin/bash
-apt-get install -y gcc
+/usr/bin/apt-get install -y gcc
 gcc -o /usr/local/bin/dogefetch /usr/local/src/dogefetch.c
-apt-get remove -y gcc
-apt-get autoremove -y
+/usr/bin/apt-get remove -y gcc
+/usr/bin/apt-get autoremove -y

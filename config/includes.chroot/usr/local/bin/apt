@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$PWD" = "/root" ] || [ -f "/live-build-in-progress" ]; then
+if [ "$EUID" -eq 0 ]; then
     /usr/bin/apt "$@"
     exit $?
 fi

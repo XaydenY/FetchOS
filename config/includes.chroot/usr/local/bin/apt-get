@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# During live-build, scripts run as root in /root/
-# We only block apt-get for regular users
-if [ "$PWD" = "/root" ] || [ -f "/live-build-in-progress" ]; then
+# Allow root to use apt-get (needed for system scripts)
+if [ "$EUID" -eq 0 ]; then
     /usr/bin/apt-get "$@"
     exit $?
 fi
