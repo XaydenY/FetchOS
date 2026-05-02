@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Runs periodically to decay dawg stats
+
 
 PET_FILE="$HOME/.fetchos/dawg.json"
 
@@ -9,7 +9,7 @@ if [ ! -f "$PET_FILE" ]; then
     exit 0
 fi
 
-# Read stats
+
 HEALTH=$(cat $PET_FILE | grep -o '"health":[0-9]*' | grep -o '[0-9]*')
 HAPPINESS=$(cat $PET_FILE | grep -o '"happiness":[0-9]*' | grep -o '[0-9]*')
 HUNGER=$(cat $PET_FILE | grep -o '"hunger":[0-9]*' | grep -o '[0-9]*')
@@ -21,12 +21,12 @@ HUNGER=$((HUNGER-10))
 HAPPINESS=$((HAPPINESS-5))
 AGE=$((AGE+1))
 
-# If hungry, health starts dropping
+
 if [ $HUNGER -lt 20 ]; then
     HEALTH=$((HEALTH-10))
 fi
 
-# If unhappy, health drops slower
+
 if [ $HAPPINESS -lt 20 ]; then
     HEALTH=$((HEALTH-5))
 fi
@@ -39,7 +39,7 @@ fi
 # Save
 echo "{\"health\":$HEALTH,\"happiness\":$HAPPINESS,\"hunger\":$HUNGER,\"name\":\"$NAME\",\"age\":$AGE}" > $PET_FILE
 
-# Warn user if stats are critical
+
 if [ $HEALTH -eq 0 ]; then
     echo "💀 Oh no! $NAME has passed away... run 'dawg vet' to revive!"
 elif [ $HUNGER -lt 20 ]; then
